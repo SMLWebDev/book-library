@@ -13,9 +13,11 @@
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
     "lint": "eslint . --fix",
-    "format": "prettier --write src/"
+    "format": "prettier --write src/",
+    "supabase:new-migration": "bunx supabase migration new"
   },
   "dependencies": {
+    "@primeuix/themes": "^1.2.3",
     "@supabase/supabase-js": "^2.56.0",
     "@tailwindcss/vite": "^4.1.12",
     "@tanstack/vue-query": "^5.85.5",
