@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { supabase } from '@/api/supabase'
-import type { User } from '@/types'
+import { supabase } from '../api/supabase'
+import type { User } from '../types'
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null)
@@ -9,35 +9,52 @@ export const useAuthStore = defineStore('auth', () => {
 
   const initializeAuth = async () => {
     try {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession()
-      user.value =
-        session?.user && session.user.email ? { ...session.user, email: session.user.email } : null
-
-      const {
-        data: { subscription },
-      } = await supabase.auth.onAuthStateChange((event, session) => {
-        user.value =
-          session?.user && session.user.email
-            ? { ...session.user, email: session.user.email }
+      // Get initial session
+      const { data: { session } } = await supabase.auth.getSession()
+      user.value = session?.user
+        ? {
+            ...session.user,
+            email: session.user.email ?? '',
+          }
+        : null
+      
+      // Listen for auth changes
+      const { data: { subscription } } = supabase.auth.onAuthStateChange(
+        (event, session) => {
+          console.log('Auth state changed:', event)
+          user.value = session?.user
+            ? {
+                ...session.user,
+                email: session.user.email ?? '',
+              }
             : null
-      })
-
-      return () => subscription?.unsubscribe()
+          isLoading.value = false
+        }
+      )
+      
+      return () => subscription.unsubscribe()
     } catch (error) {
-      console.error('Error initialising Auth: ', error)
-    } finally {
+      console.error('Error initializing auth:', error)
       isLoading.value = false
     }
   }
 
   const signUp = async (email: string, password: string) => {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+    })
+    
+    if (error) throw error
+    return data
+  }
+
+  const signIn = async (email: string, password: string) => {
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     })
-
+    
     if (error) throw error
     return data
   }
@@ -52,6 +69,7 @@ export const useAuthStore = defineStore('auth', () => {
     isLoading,
     initializeAuth,
     signUp,
+    signIn,
     signOut,
   }
 })
