@@ -137,8 +137,15 @@ CREATE POLICY "Users can delete their own reading sessions"
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
-    INSERT INTO public.profiles (id, email)
-    VALUES (NEW.id, NEW.email);
+    INSERT INTO public.profiles (id, email, name, avatar_url, created_at, updated_at)
+    VALUES (
+        NEW.id, 
+        NEW.email,
+        COALESCE(NEW.raw_user_meta_data->>'name', ''),
+        COALESCE(NEW.raw_user_meta_data->>'avatar_url', ''),
+        NOW(),
+        NOW()
+        );
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;

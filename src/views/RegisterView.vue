@@ -83,11 +83,12 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAuthStore } from '@/stores/auth'
+// import { useAuthStore } from '@/stores/auth'
 import { InputText, Button, Password } from 'primevue'
+import { supabase } from '@/api/supabase'
 
 const router = useRouter()
-const authStore = useAuthStore()
+// const authStore = useAuthStore()
 
 const loading = ref(false)
 const errorMessage = ref('')
@@ -154,7 +155,18 @@ const handleRegister = async () => {
   successMessage.value = ''
 
   try {
-    await authStore.signUp(form.email, form.password)
+    const { error } = await supabase.auth.signUp({
+      email: form.email,
+      password: form.password,
+      options: {
+        data: {
+          name: form.name,
+        },
+      },
+    })
+
+    if (error) throw error
+
     successMessage.value =
       'Account created successfully! Please check your email to verify your account.'
 

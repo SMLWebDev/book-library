@@ -42,6 +42,12 @@
           Sign up here
         </RouterLink>
       </p>
+      <p class="text-gray-600">
+        Forgot your password?
+        <RouterLink to="/forgot-password" class="text-indigo-600 hover:text-indigo-500 font-medium">
+          Reset it here
+        </RouterLink>
+      </p>
     </div>
   </div>
 </template>

@@ -7,20 +7,27 @@
       </p>
     </div>
 
-    <div v-if="authStore.user" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-      <h3>Welcome Back, {{ authStore.user.user_metadata.name }}</h3>
-      <p>See a snapshot of your stats below.</p>
-      <div class="bg-white rounded-lg shadow p-6 text-center">
-        <h3 class="text-2xl font-bold text-indigo-600">{{ bookStore.stats.totalBooks }}</h3>
-        <p class="text-gray-600">Total Books</p>
+    <div v-if="authStore.user" class="bg-gray-200 p-4 rounded-lg mb-8">
+      <div class="flex flex-col items-center">
+        <h3 class="text-xl text-gray-700 mb-2">
+          Welcome Back,
+          <span class="font-bold text-indigo-600">{{ authStore.user.user_metadata.name }}</span>
+        </h3>
+        <p class="text-gray-700 mb-2">See a snapshot of your stats below.</p>
       </div>
-      <div class="bg-white rounded-lg shadow p-6 text-center">
-        <h3 class="text-2xl font-bold text-indigo-600">{{ bookStore.stats.booksRead }}</h3>
-        <p class="text-gray-600">Books Read</p>
-      </div>
-      <div class="bg-white rounded-lg shadow p-6 text-center">
-        <h3 class="text-2xl font-bold text-indigo-600">{{ bookStore.stats.pagesRead }}</h3>
-        <p class="text-gray-600">Pages Read</p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-white rounded-lg shadow p-6 text-center">
+          <h3 class="text-2xl font-bold text-indigo-600">{{ bookStore.stats.totalBooks }}</h3>
+          <p class="text-gray-600">Total Books</p>
+        </div>
+        <div class="bg-white rounded-lg shadow p-6 text-center">
+          <h3 class="text-2xl font-bold text-indigo-600">{{ bookStore.stats.booksRead }}</h3>
+          <p class="text-gray-600">Books Read</p>
+        </div>
+        <div class="bg-white rounded-lg shadow p-6 text-center">
+          <h3 class="text-2xl font-bold text-indigo-600">{{ bookStore.stats.pagesRead }}</h3>
+          <p class="text-gray-600">Pages Read</p>
+        </div>
       </div>
     </div>
 
