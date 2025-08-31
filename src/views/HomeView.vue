@@ -33,15 +33,7 @@
 
     <div class="bg-white rounded-lg shadow p-6">
       <h2 class="text-2xl font-bold mb-4">Quick Search</h2>
-      <div class="flex gap-4">
-        <InputText
-          v-model="searchQuery"
-          placeholder="Search for books by title, author, genre, or ISBN"
-          class="flex-grow"
-          @ketup.enter="searchBooks"
-        />
-        <Button label="Search" @click="searchBooks" class="p-button-indigo" icon="pi pi-search" />
-      </div>
+      <BookSearch />
     </div>
 
     <div
@@ -70,16 +62,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { onMounted } from 'vue'
 
 import { useBookStore } from '@/stores/books'
 import { useAuthStore } from '@/stores/auth'
 
-import { InputText, Button, ProgressSpinner } from 'primevue'
+import { Button, ProgressSpinner } from 'primevue'
+
+import BookSearch from '@/components/BookSearch.vue'
 
 const bookStore = useBookStore()
 const authStore = useAuthStore()
-const searchQuery = ref('')
 
 onMounted(() => {
   if (authStore.user) {
@@ -87,7 +80,5 @@ onMounted(() => {
   }
 })
 
-const searchBooks = () => {
-  console.log('Searching for: ', searchQuery.value)
-}
+console.info(bookStore)
 </script>

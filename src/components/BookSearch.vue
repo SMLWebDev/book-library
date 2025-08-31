@@ -30,7 +30,7 @@
             severity="secondary"
             size="small"
           />
-          <span class="text-sm">Page {{ currentPage }} of {{ totalPages }}</span>
+          <span class="text-sm text-gray-600">Page {{ currentPage }} of {{ totalPages }}</span>
           <Button
             icon="pi pi-chevron-right"
             @click="goToPage(currentPage + 1)"
@@ -59,12 +59,13 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { useSearchStore, useBookStore, useAuthStore } from '@/stores'
+import { useSearchStore } from '@/stores/search'
+import { useBookStore } from '@/stores/books'
+import { useAuthStore } from '@/stores/auth'
 import type { Book } from '@/types'
 
 import { InputText, Button } from 'primevue'
-
-import { BookSearchResult } from '@/components/BookSearchResult.vue'
+import BookSearchResult from './BookSearchResult.vue'
 
 const searchStore = useSearchStore()
 const bookStore = useBookStore()

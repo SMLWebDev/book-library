@@ -5,7 +5,7 @@
     <div class="flex">
       <div class="w-1/3">
         <img
-          :src="book.thumbnail || '/placeholder-book.png'"
+          :src="book.thumbnail || '/placeholder-book.svg'"
           :alt="book.title"
           class="w-full h-48 object-cover"
           @error="handleImageError"
@@ -40,7 +40,7 @@
           </span>
 
           <Button
-            label="Add to Library"
+            :label="buttonLabel"
             size="small"
             @click="$emit('add-to-library', book)"
             :disabled="isInLibrary"
@@ -57,7 +57,7 @@ import { useBookStore } from '@/stores/books'
 import type { Book } from '@/types'
 import Button from 'primevue/button'
 
-defineProps<{
+const props = defineProps<{
   book: Book
 }>()
 
@@ -68,12 +68,16 @@ defineEmits<{
 const bookStore = useBookStore()
 
 const isInLibrary = computed(() => {
-  return bookStore.userBooks.some((b) => b.id === book.id)
+  return bookStore.userBooks.some((b) => b.id === props.book.id)
+})
+
+const buttonLabel = computed(() => {
+  return isInLibrary.value ? 'In your Library' : 'Add to Library'
 })
 
 const handleImageError = (event: Event) => {
   const img = event.target as HTMLImageElement
-  img.src = '/placeholder-book.png'
+  img.src = '/placeholder-book.svg'
 }
 </script>
 
