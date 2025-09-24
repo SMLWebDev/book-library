@@ -1,1 +1,14 @@
 @import 'tailwindcss';
+
+body {
+  @apply text-gray-600;
+}
+
+.book-detail {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.card-design {
+  @apply bg-white rounded-lg shadow-md p-6;
+}

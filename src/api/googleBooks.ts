@@ -8,7 +8,7 @@ export const googleBooksApi = {
   searchBooks: async (query: string, maxResults: number = 20, startIndex: number = 0): Promise<BookSearchResult> => {
     try {
       const response = await axios.get(
-        `${API_BASE_URL}/volumes?q=${encodeURIComponent(query)}&maxResults=${maxResults}&startIndex=${startIndex}&projection=lite`
+        `${API_BASE_URL}/volumes?q=${encodeURIComponent(query)}&maxResults=${maxResults}&startIndex=${startIndex}`
       )
 
       return {
@@ -47,6 +47,8 @@ export const googleBooksApi = {
 const formatBook = (item: any): Book => {
   const volumeInfo = item.volumeInfo || {}
   const imageLinks = volumeInfo.imageLinks || {}
+
+  console.log(volumeInfo)
 
   return {
     id: item.id,

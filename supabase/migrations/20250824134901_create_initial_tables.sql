@@ -51,8 +51,9 @@ CREATE TABLE IF NOT EXISTS reading_sessions (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     user_id UUID REFERENCES profiles(id) ON DELETE CASCADE NOT NULL,
     book_id TEXT REFERENCES books(id) ON DELETE CASCADE NOT NULL,
-    start_time TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    end_time TIMESTAMP WITH TIME ZONE,
+    date DATE,
+    start_page INTEGER DEFAULT 0,
+    end_page INTEGER,
     pages_read INTEGER DEFAULT 0,
     notes TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()

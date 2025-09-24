@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
+  <div class="max-w-md mx-auto card-design">
     <h2 class="text-2xl font-bold text-center mb-4">Reset Password</h2>
     <p class="text-gray-600 text-center mb-6">
       Enter your email address below and we'll send you a link to reset your password.

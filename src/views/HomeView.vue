@@ -79,6 +79,4 @@ onMounted(() => {
     bookStore.fetchUserBooks()
   }
 })
-
-console.info(bookStore)
 </script>

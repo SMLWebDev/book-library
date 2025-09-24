@@ -38,6 +38,7 @@ export const useBookStore = defineStore('books', () => {
         const book = item.books
         return {
           id: item.id,
+          bookId: item.book_id,
           title: book?.title || '',
           authors: book?.authors || [],
           publishedDate: book?.published_date || null,
@@ -203,6 +204,83 @@ export const useBookStore = defineStore('books', () => {
     return stats
   })
 
+  const updateBookRating = async (bookId: string, rating: number | null) => {
+  try {
+    const { error } = await supabase
+      .from('user_books')
+      .update({ user_rating: rating, updated_at: new Date().toISOString() })
+      .eq('id', bookId)
+
+    if (error) throw error
+    
+    // Update local state
+    const index = userBooks.value.findIndex(b => b.id === bookId)
+    if (index !== -1) {
+      userBooks.value[index].userRating = rating
+    }
+  } catch (error) {
+    console.error('Error updating book rating:', error)
+    throw error
+  }
+}
+
+const updateBookNotes = async (bookId: string, notes: string | null) => {
+  try {
+    const { error } = await supabase
+      .from('user_books')
+      .update({ user_notes: notes, updated_at: new Date().toISOString() })
+      .eq('id', bookId)
+
+    if (error) throw error
+    
+    // Update local state
+    const index = userBooks.value.findIndex(b => b.id === bookId)
+    if (index !== -1) {
+      userBooks.value[index].userNotes = notes
+    }
+  } catch (error) {
+    console.error('Error updating book notes:', error)
+    throw error
+  }
+}
+
+const updateBookDates = async (bookId: string, dates: { dateStarted?: string; dateFinished?: string }) => {
+  try {
+    const updates: any = {
+      updated_at: new Date().toISOString()
+    }
+
+    if (dates.dateStarted !== undefined) {
+      updates.date_started = dates.dateStarted
+    }
+    
+    if (dates.dateFinished !== undefined) {
+      updates.date_finished = dates.dateFinished
+    }
+
+    const { error } = await supabase
+      .from('user_books')
+      .update(updates)
+      .eq('id', bookId)
+
+    if (error) throw error
+    
+    // Update local state
+    const index = userBooks.value.findIndex(b => b.id === bookId)
+    if (index !== -1) {
+      if (dates.dateStarted !== undefined) {
+        userBooks.value[index].dateStarted = dates.dateStarted
+      }
+      if (dates.dateFinished !== undefined) {
+        userBooks.value[index].dateFinished = dates.dateFinished
+      }
+    }
+  } catch (error) {
+    console.error('Error updating book dates:', error)
+    throw error
+  }
+}
+
   return {
     userBooks,
     loading,
@@ -210,5 +288,8 @@ export const useBookStore = defineStore('books', () => {
     fetchUserBooks,
     addBook,
     updateBookStatus,
+    updateBookDates,
+    updateBookNotes,
+    updateBookRating
   }
 })

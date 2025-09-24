@@ -1,0 +1,4 @@
+ALTER TABLE reading_sessions
+DROP COLUMN IF EXISTS end_time,
+DROP COLUMN IF EXISTS notes,
+DROP COLUMN IF EXISTS created_at;

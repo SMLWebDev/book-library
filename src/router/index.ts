@@ -22,6 +22,18 @@ const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
+      path: '/book/:id',
+      name: 'BookDetails',
+      component: () => import('@/views/BookDetails.vue'),
+      props: true
+    },
+    {
+      path: '/library/book/:id',
+      name: 'LibrarySingleBook',
+      component: () => import('@/views/LibrarySingleBook.vue'),
+      props: true
+    },
+    {
       path: '/login',
       name: 'login',
       component: () => import('@/views/LoginView.vue'),

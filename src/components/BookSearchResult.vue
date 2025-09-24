@@ -13,17 +13,20 @@
       </div>
 
       <div class="w-2/3 p-4">
-        <h3 class="font-semibold text-lg mb-1 line-clamp-2">{{ book.title }}</h3>
+        <RouterLink :to="`/book/${book.title}`" class="block">
+          <h3 class="font-bold text-lg text-gray-600 tracking-wide mb-1 line-clamp-2">
+            {{ book.title }}
+          </h3>
+        </RouterLink>
 
         <p class="text-gray-600 text-sm mb-2">
           by {{ book.authors.join(', ') || 'Unknown Author' }}
         </p>
 
         <div class="flex items-center mb-2">
-          <span class="text-yellow-500 text-sm">
+          <span class="text-green-600 text-sm">
             {{ book.averageRating ? `⭐ ${book.averageRating}` : 'No ratings' }}
           </span>
-          <span class="text-gray-400 text-sm mx-2">•</span>
           <span class="text-gray-500 text-sm">
             {{ book.ratingsCount ? `${book.ratingsCount} reviews` : '' }}
           </span>
@@ -34,11 +37,6 @@
         </p>
 
         <div class="flex justify-between items-center">
-          <span class="text-xs text-gray-500">
-            {{ book.pageCount ? `${book.pageCount} pages` : '' }}
-            {{ book.publishedDate ? `• ${new Date(book.publishedDate).getFullYear()}` : '' }}
-          </span>
-
           <Button
             :label="buttonLabel"
             size="small"
@@ -66,6 +64,8 @@ defineEmits<{
 }>()
 
 const bookStore = useBookStore()
+
+console.info('Da Props: ', props)
 
 const isInLibrary = computed(() => {
   return bookStore.userBooks.some((b) => b.id === props.book.id)

@@ -9,6 +9,7 @@ export interface User {
 
 export interface Book {
   id: string;
+  bookId: string;
   title: string;
   authors: string[];
   publishedDate?: string | null;
@@ -46,6 +47,19 @@ export interface ReadingStats {
   booksByYear: { [key: string]: number };
   pagesRead: number;
   averageRating: number;
+}
+
+export interface ReadingSessions {
+  id: string
+  user_id: string
+  book_id: string
+  created_at: string | null
+  pages_read: number | null
+  start_page: number | null
+  end_page: number | null
+  start_time: string | null
+  end_time: string | null
+  notes: string | null
 }
 
 // Add these new types for form handling

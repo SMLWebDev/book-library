@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
+  <div class="max-w-md mx-auto card-design">
     <h2 class="text-2xl font-bold text-center mb-4">Update Password</h2>
 
     <form @submit.prevent="handlePasswordUpdate" class="space-y-4">

@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
+  <div class="max-w-md mx-auto card-design">
     <h1 class="text-2xl font-bold text-center mb-6">Create Account</h1>
 
     <form @submit.prevent="handleRegister" class="space-y-4">

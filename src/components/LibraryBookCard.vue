@@ -4,12 +4,14 @@
     class="library-book-card bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
   >
     <div class="relative">
-      <img
-        :src="book.thumbnail || '/placeholder-book.svg'"
-        :alt="book.title"
-        class="w-full h-48 object-cover"
-        @error="handleImageError"
-      />
+      <RouterLink :to="`/library/book/${book.id}`">
+        <img
+          :src="book.thumbnail || '/placeholder-book.svg'"
+          :alt="book.title"
+          class="w-full h-48 object-cover"
+          @error="handleImageError"
+        />
+      </RouterLink>
 
       <div class="absolute top-2 right-2">
         <Tag :value="book.status" :severity="statusSeverity" />
@@ -17,13 +19,16 @@
     </div>
 
     <div class="p-4">
-      <h3 class="font-semibold text-lg mb-1 line-clamp-2">{{ book.title }}</h3>
+      <RouterLink :to="`/library/book/${book.id}`">
+        <h3 class="font-semibold text-gray-600 text-lg mb-1 line-clamp-2">{{ book.title }}</h3>
+      </RouterLink>
 
       <p class="text-gray-600 text-sm mb-2">by {{ book.authors.join(', ') || 'Unknown Author' }}</p>
 
       <div class="flex items-center justify-between mb-3">
         <span class="text-xs text-gray-500">
-          {{ book.pageCount ? `${book.pageCount} pages` : '' }}
+          Pages: {{ book.pageCount ? `${book.pageCount} pages` : 'Unknown' }} <br />
+          Published:
           {{ book.publishedDate ? `- ${new Date(book.publishedDate).getFullYear()}` : '' }}
         </span>
 
