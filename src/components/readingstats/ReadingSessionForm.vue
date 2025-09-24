@@ -36,6 +36,8 @@
     <Button label="Add Session" @click="addSession" />
     <p v-if="message">{{ message }}</p>
   </div>
+
+  <ReadingSessionList />
 </template>
 
 <script setup lang="ts">
@@ -43,6 +45,8 @@ import { ref, computed } from 'vue'
 import { supabase } from '@/api/supabase'
 import { useAuthStore } from '@/stores/auth'
 import { Button, InputNumber } from 'primevue'
+
+import ReadingSessionList from '@/components/readingstats/ReadingSessionList.vue'
 
 const authStore = useAuthStore()
 const message = ref<string | null>(null)
@@ -69,7 +73,6 @@ const addSession = async () => {
     const sessionData = {
       user_id: authStore.user.id,
       book_id: props.bookId,
-      created_at: new Date().toISOString().split('T')[0],
       pages_read: pagesRead.value,
       start_page: startPage.value,
       end_page: endPage.value,
