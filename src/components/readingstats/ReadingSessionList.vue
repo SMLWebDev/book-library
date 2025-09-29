@@ -47,4 +47,8 @@ const showSessions = async () => {
     loading.value = false
   }
 }
+
+defineExpose({
+  showSessions,
+})
 </script>
