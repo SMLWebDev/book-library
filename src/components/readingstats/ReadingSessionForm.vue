@@ -6,27 +6,29 @@
 
     <div class="space-y-2 mb-4">
       <div>
-        <label>Start Page</label>
+        <label for="startDate" class="mr-2">Start Date</label>
+        <DatePicker v-model="startDate" showIcon size="small" class="mr-2" />
+        <label for="startPage" class="mr-2">Start Page</label>
         <InputNumber
           v-model.number="startPage"
           :min="1"
           :max="1000"
-          :showButtons="true"
-          :buttonLayout="'horizontal'"
+          showButtons
           :step="1"
-          class="border p-1"
+          size="small"
         />
       </div>
       <div>
-        <label>End Page</label>
+        <label for="endDate" class="mr-2">End Date</label>
+        <DatePicker v-model="endDate" showIcon size="small" class="mr-2" />
+        <label for="endPage" class="mr-2">End Page</label>
         <InputNumber
           v-model.number="endPage"
           :min="1"
           :max="1000"
-          :showButtons="true"
-          :buttonLayout="'horizontal'"
+          showButtons
           :step="1"
-          class="border p-1"
+          size="small"
         />
       </div>
       <div>
@@ -36,19 +38,25 @@
     <Button label="Add Session" @click="addSession" />
     <p v-if="message">{{ message }}</p>
   </div>
+
+  <ReadingSessionList />
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { supabase } from '@/api/supabase'
 import { useAuthStore } from '@/stores/auth'
-import { Button, InputNumber } from 'primevue'
+import { Button, InputNumber, DatePicker } from 'primevue'
+
+import ReadingSessionList from '@/components/readingstats/ReadingSessionList.vue'
 
 const authStore = useAuthStore()
 const message = ref<string | null>(null)
 
 const startPage = ref(1)
 const endPage = ref(10)
+const startDate = ref(new Date())
+const endDate = ref(new Date())
 
 const props = defineProps<{
   bookId: string
@@ -69,7 +77,6 @@ const addSession = async () => {
     const sessionData = {
       user_id: authStore.user.id,
       book_id: props.bookId,
-      created_at: new Date().toISOString().split('T')[0],
       pages_read: pagesRead.value,
       start_page: startPage.value,
       end_page: endPage.value,
