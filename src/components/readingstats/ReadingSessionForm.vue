@@ -35,27 +35,37 @@
         <label>Pages Read: {{ pagesRead }}</label>
       </div>
     </div>
-    <Button label="Add Session" @click="addSession" />
-    <p v-if="message">{{ message }}</p>
+    <Button
+      label="Add Session"
+      @click="addSession"
+      :loading="readingSessionsStore.loading"
+      :disabled="readingSessionsStore.loading"
+    />
+    <p v-if="message" class="mt-2 p-2 rounded" :class="messageClass">{{ message }}</p>
+
+    <p v-if="readingSessionsStore.error" class="mt-2 p-2 bg-red-100 text-red-700 rounded">
+      {{ readingSessionsStore.error }}
+    </p>
   </div>
 
   <ReadingSessionList />
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { supabase } from '@/api/supabase'
+import { ref, computed, watch } from 'vue'
+import { useReadingSessionsStore } from '@/stores/readingSession'
 import { useAuthStore } from '@/stores/auth'
 import { Button, InputNumber, DatePicker } from 'primevue'
 
 import ReadingSessionList from '@/components/readingstats/ReadingSessionList.vue'
 
 const authStore = useAuthStore()
-const message = ref<string | null>(null)
+const readingSessionsStore = useReadingSessionsStore()
 
 const startPage = ref(1)
 const endPage = ref(10)
 const dateRead = ref(new Date())
+const message = ref<string | null>(null)
 
 const props = defineProps<{
   bookId: string
@@ -66,13 +76,19 @@ const pagesRead = computed(() => {
   return endPage.value - startPage.value + 1
 })
 
-const addSession = async () => {
-  try {
-    if (!authStore.user) {
-      message.value = 'Please log in first'
-      return
-    }
+const messageClass = computed(() => {
+  return message.value?.includes('Error')
+    ? 'bg-red-100 text-red-700'
+    : 'bg-green-100 text-green-700'
+})
 
+const addSession = async () => {
+  if (!authStore.user) {
+    message.value = 'Please log in first'
+    return
+  }
+
+  try {
     const sessionData = {
       user_id: authStore.user.id,
       book_id: props.bookId,
@@ -82,11 +98,8 @@ const addSession = async () => {
       date_read: dateRead.value.toISOString().split('T')[0],
     }
 
-    const { error } = await supabase.from('reading_sessions').insert([sessionData]).select()
-
-    if (error) throw error
-
-    message.value = `Added reading session for ${pagesRead.value} pages`
+    await readingSessionsStore.addSession(sessionData)
+    message.value = `Added reading session for ${pagesRead.value} pages read on ${dateRead.value.toDateString()}`
 
     startPage.value = endPage.value + 1
     endPage.value = startPage.value + 9
@@ -95,4 +108,13 @@ const addSession = async () => {
     console.error('Error adding sessions: ', error)
   }
 }
+
+watch(message, (newMessage) => {
+  if (newMessage) {
+    setTimeout(() => {
+      message.value = null
+      readingSessionsStore.clearError()
+    }, 3000)
+  }
+})
 </script>
