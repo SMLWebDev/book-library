@@ -6,8 +6,10 @@
 
     <div class="space-y-2 mb-4">
       <div>
-        <label for="startDate" class="mr-2">Start Date</label>
-        <DatePicker v-model="startDate" showIcon size="small" class="mr-2" />
+        <label for="startDate" class="mr-2">Date Read</label>
+        <DatePicker v-model="dateRead" showIcon size="small" class="mr-2" />
+      </div>
+      <div>
         <label for="startPage" class="mr-2">Start Page</label>
         <InputNumber
           v-model.number="startPage"
@@ -19,8 +21,6 @@
         />
       </div>
       <div>
-        <label for="endDate" class="mr-2">End Date</label>
-        <DatePicker v-model="endDate" showIcon size="small" class="mr-2" />
         <label for="endPage" class="mr-2">End Page</label>
         <InputNumber
           v-model.number="endPage"
@@ -55,8 +55,7 @@ const message = ref<string | null>(null)
 
 const startPage = ref(1)
 const endPage = ref(10)
-const startDate = ref(new Date())
-const endDate = ref(new Date())
+const dateRead = ref(new Date())
 
 const props = defineProps<{
   bookId: string
@@ -80,9 +79,10 @@ const addSession = async () => {
       pages_read: pagesRead.value,
       start_page: startPage.value,
       end_page: endPage.value,
+      date_read: dateRead.value.toISOString().split('T')[0],
     }
 
-    const { data, error } = await supabase.from('reading_sessions').insert([sessionData]).select()
+    const { error } = await supabase.from('reading_sessions').insert([sessionData]).select()
 
     if (error) throw error
 

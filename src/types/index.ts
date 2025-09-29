@@ -53,13 +53,11 @@ export interface ReadingSessions {
   id: string
   user_id: string
   book_id: string
-  created_at: string | null
+  start_time: string | null
   pages_read: number | null
   start_page: number | null
   end_page: number | null
-  start_time: string | null
-  end_time: string | null
-  notes: string | null
+  date_read: string | null
 }
 
 // Add these new types for form handling

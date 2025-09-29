@@ -8,7 +8,7 @@
       <h3>Reading Stats</h3>
       <div v-if="!sessions">You haven't recorded any reading sessions yet.</div>
       <div v-else v-for="session in sessions" :key="session.id">
-        {{ session.pages_read }} pages read on {{ session.start_time }}
+        {{ session.pages_read }} pages read on {{ session.date_read }}
       </div>
     </div>
   </div>
@@ -23,7 +23,7 @@ import type { ReadingSessions } from '@/types'
 const authStore = useAuthStore()
 const sessions = ref<ReadingSessions[]>([])
 const loading = ref(false)
-const error = ref(null)
+const error = ref<string | null>(null)
 
 onMounted(async () => {
   await showSessions()
@@ -42,7 +42,7 @@ const showSessions = async () => {
     if (error) throw error
     sessions.value = data
   } catch (err) {
-    error.value = err.message
+    error.value = err instanceof Error ? err.message : 'An unknown error occurred'
   } finally {
     loading.value = false
   }
