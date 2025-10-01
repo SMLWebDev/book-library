@@ -7,7 +7,7 @@
     <div class="space-y-2 mb-4 flex flex-col gap-2">
       <div class="flex items-center">
         <label for="startDate" class="mr-2 w-20">Date Read</label>
-        <DatePicker v-model="dateRead" showIcon size="small" class="mr-2" />
+        <DatePicker v-model="dateRead" showIcon size="small" class="mr-2" dateFormat="dd/mm/yy" />
       </div>
       <div class="flex items-center">
         <label for="startPage" class="mr-2 w-20">Start Page</label>
@@ -55,6 +55,9 @@
 import { ref, computed, watch } from 'vue'
 import { useReadingSessionsStore } from '@/stores/readingSession'
 import { useAuthStore } from '@/stores/auth'
+
+import { formatDateForDB } from '@/utils/dateFormatter'
+
 import { Button, InputNumber, DatePicker } from 'primevue'
 
 import ReadingSessionList from '@/components/readingstats/ReadingSessionList.vue'
@@ -95,7 +98,7 @@ const addSession = async () => {
       pages_read: pagesRead.value,
       start_page: startPage.value,
       end_page: endPage.value,
-      date_read: dateRead.value.toISOString().split('T')[0],
+      date_read: formatDateForDB(dateRead.value),
     }
 
     await readingSessionsStore.addSession(sessionData)

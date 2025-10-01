@@ -50,14 +50,24 @@ export interface ReadingStats {
 }
 
 export interface ReadingSessions {
-  id: string
-  user_id: string
-  book_id: string
-  start_time: string | null
-  pages_read: number | null
-  start_page: number | null
-  end_page: number | null
-  date_read: string | null
+  id: string;
+  user_id: string;
+  book_id: string;
+  start_time: string | null;
+  pages_read: number | null;
+  start_page: number | null;
+  end_page: number | null;
+  date_read: string | null;
+}
+
+export interface NewReadingSession {
+  user_id: string;
+  book_id: string;
+  start_time?: string;
+  pages_read?: number;
+  start_page?: number;
+  end_page?: number;
+  date_read?: string;
 }
 
 // Add these new types for form handling

@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { supabase } from '@/api/supabase'
-import type { ReadingSessions } from '@/types'
+import type { ReadingSessions, NewReadingSession } from '@/types'
 
 export const useReadingSessionsStore = defineStore('readingSessions', () => {
     const sessions = ref<ReadingSessions[]>([])
@@ -22,7 +22,7 @@ export const useReadingSessionsStore = defineStore('readingSessions', () => {
                 .from('reading_sessions')
                 .select('*')
                 .eq('user_id', userId)
-                .order('date_read', { ascending: false })
+                .order('date_read', { ascending: true })
                 
             if (supabaseError) throw supabaseError
             sessions.value = data || []
@@ -34,7 +34,7 @@ export const useReadingSessionsStore = defineStore('readingSessions', () => {
         }
     }
 
-    const addSession = async (sessionData: ReadingSessions) => {
+    const addSession = async (sessionData: NewReadingSession) => {
         try {
             loading.value = true
             error.value = null

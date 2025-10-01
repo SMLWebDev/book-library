@@ -9,7 +9,7 @@
     </div>
 
     <div v-else>
-      <div v-if="readingSessionsStore.sessions.length === 0" class="text-gray-500">
+      <div v-if="readingSessionsStore.sessions.length === 0" class="text-gray-500 text-center">
         You haven't recorded any reading sessions yet.
       </div>
 
@@ -38,19 +38,29 @@
 
         <!-- Session List -->
         <div class="space-y-3">
-          <div
-            v-for="session in readingSessionsStore.sessions"
-            :key="session.id"
-            class="p-3 border rounded hover:bg-gray-50"
-          >
-            <div class="flex justify-between items-center">
-              <span class="font-semibold">{{ session.pages_read }} pages</span>
-              <span class="text-sm text-gray-500">{{ formatDate(session.date_read) }}</span>
-            </div>
-            <div v-if="session.start_page && session.end_page" class="text-sm text-gray-600">
-              Pages {{ session.start_page }} - {{ session.end_page }}
-            </div>
-          </div>
+          <Accordion value="0" expandIcon="pi pi-plus" collapseIcon="pi pi-minus">
+            <AccordionPanel value="0">
+              <AccordionHeader>Reading Pages</AccordionHeader>
+              <AccordionContent>
+                <div
+                  v-for="session in readingSessionsStore.sessions"
+                  :key="session.id"
+                  class="p-3 border rounded hover:bg-gray-50"
+                >
+                  <!-- TODO-FEAT: Add option to remove session from list -->
+                  <div class="flex justify-between items-center">
+                    <span class="font-semibold">{{ session.pages_read }} pages</span>
+                    <span class="text-sm text-gray-500">{{
+                      formatDateForDisplay(session.date_read)
+                    }}</span>
+                  </div>
+                  <div v-if="session.start_page && session.end_page" class="text-sm text-gray-600">
+                    Pages {{ session.start_page }} - {{ session.end_page }}
+                  </div>
+                </div>
+              </AccordionContent>
+            </AccordionPanel>
+          </Accordion>
         </div>
       </div>
     </div>
@@ -59,8 +69,13 @@
 
 <script setup lang="ts">
 import { onMounted, watch } from 'vue'
+
 import { useReadingSessionsStore } from '@/stores/readingSession'
 import { useAuthStore } from '@/stores/auth'
+
+import { formatDateForDisplay } from '@/utils/dateFormatter'
+
+import { Accordion, AccordionPanel, AccordionHeader, AccordionContent } from 'primevue'
 
 const authStore = useAuthStore()
 const readingSessionsStore = useReadingSessionsStore()
@@ -81,10 +96,4 @@ watch(
     }
   },
 )
-
-const formatDate = (dateString: string | null): string => {
-  if (!dateString) return 'No date'
-
-  return new Date(dateString).toLocaleDateString()
-}
 </script>
