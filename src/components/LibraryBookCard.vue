@@ -47,6 +47,7 @@
           :severity="book.status === statusOption.value ? 'primary' : 'secondary'"
           @click="updateStatus(statusOption.value)"
         />
+        <!-- TODO-FEAT: Add option to remove book from library -->
         <Button
           icon="pi pi-times"
           label="Remove"
