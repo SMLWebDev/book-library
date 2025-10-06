@@ -2,8 +2,8 @@
 
 ## Reading Session Breakdown
 
-- [ ] TODO-FEAT: Add start date
-- [ ] TODO-FEAT: Add Reading Status updater
+- [x] TODO-FEAT: Add start date
+- [x] TODO-FEAT: Add Reading Status updater
 - [x] TODO-FEAT: Pages read/date read
 - [ ] TODO-FEAT: Finished Date (should be auto completed on change of reading status to "Read")
 - [ ] TODO-FEAT: Pop-up dialog box when book has been completed, congratulating you on the completion and asking for a star rating and personal review
