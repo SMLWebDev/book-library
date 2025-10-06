@@ -6,6 +6,17 @@
 
     <div class="space-y-2 mb-4 flex flex-col gap-2">
       <div class="flex items-center">
+        <label for="dateStarted">Date started reading</label>
+        <DatePicker
+          v-model="dateStarted"
+          showIcon
+          size="small"
+          class="mr-2"
+          dateFormat="dd/mm/yy"
+        />
+      </div>
+      <hr />
+      <div class="flex items-center">
         <label for="startDate" class="mr-2 w-20">Date Read</label>
         <DatePicker v-model="dateRead" showIcon size="small" class="mr-2" dateFormat="dd/mm/yy" />
       </div>
@@ -56,6 +67,7 @@ import { ref, computed, watch } from 'vue'
 import { useReadingSessionsStore } from '@/stores/readingSession'
 import { useAuthStore } from '@/stores/auth'
 
+import type { UserBook } from '@/types/index'
 import { formatDateForDB } from '@/utils/dateFormatter'
 
 import { Button, InputNumber, DatePicker } from 'primevue'
@@ -69,6 +81,8 @@ const startPage = ref(1)
 const endPage = ref(10)
 const dateRead = ref(new Date())
 const message = ref<string | null>(null)
+
+const dateStarted = ref(new Date())
 
 const props = defineProps<{
   bookId: string
@@ -101,7 +115,12 @@ const addSession = async () => {
       date_read: formatDateForDB(dateRead.value),
     }
 
+    const bookProgress: Partial<UserBook> = {
+      date_started: formatDateForDB(dateStarted.value),
+    }
+
     await readingSessionsStore.addSession(sessionData)
+    await readingSessionsStore.updateBookProgress(props.bookId, bookProgress)
     message.value = `Added reading session for ${pagesRead.value} pages read on ${dateRead.value.toDateString()}`
 
     startPage.value = endPage.value + 1
