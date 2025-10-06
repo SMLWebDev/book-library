@@ -5,17 +5,32 @@
     </h3>
 
     <div class="space-y-2 mb-4 flex flex-col gap-2">
-      <div class="flex items-center">
-        <label for="dateStarted">Date started reading</label>
-        <DatePicker
-          v-model="dateStarted"
-          showIcon
-          size="small"
-          class="mr-2"
-          dateFormat="dd/mm/yy"
-        />
+      <div class="flex justify-between items-center">
+        <div>
+          <label for="dateStarted" class="mr-2">Date started reading</label>
+          <DatePicker
+            v-model="dateStarted"
+            showIcon
+            size="small"
+            class="mr-2"
+            dateFormat="dd/mm/yy"
+          />
+        </div>
+        <div>
+          <label for="selectedStatus" class="mr-2">Reading Status</label>
+          <Select
+            v-model="selectedStatus"
+            :options="readingStatus"
+            optionLabel="name"
+            placeholder="Select Status"
+            checkmark
+            :highlightOnSelect="true"
+          />
+        </div>
       </div>
+
       <hr />
+
       <div class="flex items-center">
         <label for="startDate" class="mr-2 w-20">Date Read</label>
         <DatePicker v-model="dateRead" showIcon size="small" class="mr-2" dateFormat="dd/mm/yy" />
@@ -70,7 +85,7 @@ import { useAuthStore } from '@/stores/auth'
 import type { UserBook } from '@/types/index'
 import { formatDateForDB } from '@/utils/dateFormatter'
 
-import { Button, InputNumber, DatePicker } from 'primevue'
+import { Button, InputNumber, DatePicker, Select } from 'primevue'
 
 import ReadingSessionList from '@/components/readingstats/ReadingSessionList.vue'
 
@@ -83,6 +98,7 @@ const dateRead = ref(new Date())
 const message = ref<string | null>(null)
 
 const dateStarted = ref(new Date())
+const selectedStatus = ref()
 
 const props = defineProps<{
   bookId: string
@@ -98,6 +114,12 @@ const messageClass = computed(() => {
     ? 'bg-red-100 text-red-700'
     : 'bg-green-100 text-green-700'
 })
+
+const readingStatus = ref([
+  { name: 'To Read', value: 'to-read' },
+  { name: 'Reading', value: 'reading' },
+  { name: 'Read', value: 'read' },
+])
 
 const addSession = async () => {
   if (!authStore.user) {
@@ -117,6 +139,7 @@ const addSession = async () => {
 
     const bookProgress: Partial<UserBook> = {
       date_started: formatDateForDB(dateStarted.value),
+      status: selectedStatus.value ? selectedStatus.value.value : 'to-read',
     }
 
     await readingSessionsStore.addSession(sessionData)
