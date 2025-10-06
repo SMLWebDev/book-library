@@ -27,10 +27,15 @@ export interface Book {
 export interface UserBook extends Book {
   status: 'read' | 'to-read' | 'reading';
   dateAdded: string;
-  dateStarted?: string | null;
+  date_started?: string | null;
   dateFinished?: string | null;
   userRating?: number | null;
   userNotes?: string | null;
+  created_at?: string | null;
+  updated_at?: string | null;
+  current_page?: number | null;
+  is_finished?: boolean | null;
+  last_read_date?: string | null;
 }
 
 export interface BookSearchResult {
@@ -58,6 +63,7 @@ export interface ReadingSessions {
   start_page: number | null;
   end_page: number | null;
   date_read: string | null;
+  duration_minutes?: number | null;
 }
 
 export interface NewReadingSession {
