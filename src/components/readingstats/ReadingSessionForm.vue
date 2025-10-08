@@ -1,7 +1,8 @@
 <template>
   <div class="card-design mb-5">
     <h3 class="text-2xl underline font-bold mb-4">
-      Add your reading session details for {{ bookTitle }} here
+      Add your reading session details for
+      <span class="font-black text-indigo-600">{{ bookTitle }}</span> here
     </h3>
 
     <div class="space-y-2 mb-4 flex flex-col gap-2">
@@ -30,35 +31,33 @@
       </div>
 
       <hr />
-
-      <div class="flex items-center">
-        <label for="startDate" class="mr-2 w-20">Date Read</label>
-        <DatePicker v-model="dateRead" showIcon size="small" class="mr-2" dateFormat="dd/mm/yy" />
-      </div>
-      <div class="flex items-center">
-        <label for="startPage" class="mr-2 w-20">Start Page</label>
-        <InputNumber
-          v-model.number="startPage"
-          :min="1"
-          :max="1000"
-          showButtons
-          :step="1"
-          size="small"
-        />
-      </div>
-      <div class="flex items-center">
-        <label for="endPage" class="mr-2 w-20">End Page</label>
-        <InputNumber
-          v-model.number="endPage"
-          :min="1"
-          :max="10000"
-          showButtons
-          :step="1"
-          size="small"
-        />
-      </div>
-      <div>
-        <label>Pages Read: {{ pagesRead }}</label>
+      <div class="flex flex-row justify-between items-center gap-4">
+        <div class="flex items-center">
+          <label for="startDate" class="mr-2 w-20">Date Read</label>
+          <DatePicker v-model="dateRead" showIcon size="small" class="mr-2" dateFormat="dd/mm/yy" />
+        </div>
+        <div class="flex items-center">
+          <label for="startPage" class="mr-2 w-20">Start Page</label>
+          <InputNumber
+            v-model.number="startPage"
+            :min="1"
+            :max="1000"
+            showButtons
+            :step="1"
+            size="small"
+          />
+        </div>
+        <div class="flex items-center">
+          <label for="endPage" class="mr-2 w-20">End Page</label>
+          <InputNumber
+            v-model.number="endPage"
+            :min="1"
+            :max="10000"
+            showButtons
+            :step="1"
+            size="small"
+          />
+        </div>
       </div>
     </div>
     <Button
