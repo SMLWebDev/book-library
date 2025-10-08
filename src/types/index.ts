@@ -27,10 +27,15 @@ export interface Book {
 export interface UserBook extends Book {
   status: 'read' | 'to-read' | 'reading';
   dateAdded: string;
-  dateStarted?: string | null;
+  date_started?: string | null;
   dateFinished?: string | null;
   userRating?: number | null;
   userNotes?: string | null;
+  created_at?: string | null;
+  updated_at?: string | null;
+  current_page?: number | null;
+  is_finished?: boolean | null;
+  last_read_date?: string | null;
 }
 
 export interface BookSearchResult {
@@ -50,14 +55,25 @@ export interface ReadingStats {
 }
 
 export interface ReadingSessions {
-  id: string
-  user_id: string
-  book_id: string
-  start_time: string | null
-  pages_read: number | null
-  start_page: number | null
-  end_page: number | null
-  date_read: string | null
+  id: string;
+  user_id: string;
+  book_id: string;
+  start_time: string | null;
+  pages_read: number | null;
+  start_page: number | null;
+  end_page: number | null;
+  date_read: string | null;
+  duration_minutes?: number | null;
+}
+
+export interface NewReadingSession {
+  user_id: string;
+  book_id: string;
+  start_time?: string;
+  pages_read?: number;
+  start_page?: number;
+  end_page?: number;
+  date_read?: string;
 }
 
 // Add these new types for form handling

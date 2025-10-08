@@ -39,14 +39,7 @@
       </div>
 
       <div class="flex space-x-2">
-        <Button
-          v-for="statusOption in statusOptions"
-          :key="statusOption.value"
-          :label="statusOption.label"
-          size="small"
-          :severity="book.status === statusOption.value ? 'primary' : 'secondary'"
-          @click="updateStatus(statusOption.value)"
-        />
+        <!-- TODO-FEAT: Add option to remove book from library -->
         <Button
           icon="pi pi-times"
           label="Remove"
@@ -72,10 +65,6 @@ const props = defineProps<{
   book: UserBook
 }>()
 
-const emit = defineEmits<{
-  (e: 'update-status', bookId: string, status: string, dates: unknown): void
-}>()
-
 const statusSeverity = computed(() => {
   switch (props.book.status) {
     case 'read':
@@ -88,28 +77,6 @@ const statusSeverity = computed(() => {
       return 'secondary'
   }
 })
-
-const statusOptions = [
-  { label: 'To Read', value: 'to-read' },
-  { label: 'Reading', value: 'reading' },
-  { label: 'Read', value: 'read' },
-]
-
-const updateStatus = (newStatus: string) => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const dates: Record<string, any> = {}
-
-  if (newStatus === 'reading') {
-    dates.dateStarted = new Date().toISOString()
-  } else if (newStatus === 'read') {
-    dates.dateFinished = new Date().toISOString()
-    if (!props.book.dateStarted) {
-      dates.dateStarted = new Date().toISOString()
-    }
-  }
-
-  emit('update-status', props.book.id, newStatus, dates)
-}
 
 const handleImageError = (event: Event) => {
   const img = event.target as HTMLImageElement

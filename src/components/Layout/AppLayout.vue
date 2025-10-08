@@ -18,7 +18,9 @@
             </RouterLink>
 
             <div v-if="authStore.user" class="flex items-center space-x-3">
-              <span class="text-sm text-gray-600">Hello, {{ authStore.user.email }}</span>
+              <span class="text-sm text-gray-600"
+                >Hello, {{ authStore.user.user_metadata?.name }}</span
+              >
               <Button label="Sign Out" @click="handleSignOut" severity="secondary" size="small" />
             </div>
 

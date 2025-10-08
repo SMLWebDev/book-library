@@ -1,6 +1,3 @@
-<!-- eslint-disable @typescript-eslint/no-explicit-any -->
-<!-- eslint-disable @typescript-eslint/no-explicit-any -->
-<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <template>
   <div>
     <div class="flex justify-between items-center mb-6">
