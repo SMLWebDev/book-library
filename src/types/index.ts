@@ -28,7 +28,7 @@ export interface UserBook extends Book {
   status: 'read' | 'to-read' | 'reading';
   dateAdded: string;
   date_started?: string | null;
-  dateFinished?: string | null;
+  date_finished?: string | null;
   userRating?: number | null;
   userNotes?: string | null;
   created_at?: string | null;

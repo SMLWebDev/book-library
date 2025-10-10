@@ -18,12 +18,16 @@
           />
         </div>
         <div>
+          <label for="finishedDate" class="mr-2">Finished Date</label>
+          <DatePicker v-model="finishedDate" showIcon size="small" dateFormat="dd/mm/yy" />
+        </div>
+        <div>
           <label for="selectedStatus" class="mr-2">Reading Status</label>
           <Select
             v-model="selectedStatus"
             :options="readingStatus"
             optionLabel="name"
-            placeholder="Select Status"
+            :placeholder="bookStatus"
             checkmark
             :highlightOnSelect="true"
           />
@@ -52,7 +56,7 @@
           <InputNumber
             v-model.number="endPage"
             :min="1"
-            :max="10000"
+            :max="bookPages || 10000"
             showButtons
             :step="1"
             size="small"
@@ -81,7 +85,7 @@ import { ref, computed, watch } from 'vue'
 import { useReadingSessionsStore } from '@/stores/readingSession'
 import { useAuthStore } from '@/stores/auth'
 
-import type { UserBook } from '@/types/index'
+import type { UserBook } from '@/types'
 import { formatDateForDB } from '@/utils/dateFormatter'
 
 import { Button, InputNumber, DatePicker, Select } from 'primevue'
@@ -97,11 +101,14 @@ const dateRead = ref(new Date())
 const message = ref<string | null>(null)
 
 const dateStarted = ref(new Date())
+const finishedDate = ref(new Date())
 const selectedStatus = ref()
 
 const props = defineProps<{
   bookId: string
   bookTitle: string
+  bookStatus: UserBook['status']
+  bookPages: number | null | undefined
 }>()
 
 const pagesRead = computed(() => {
@@ -139,6 +146,7 @@ const addSession = async () => {
     const bookProgress: Partial<UserBook> = {
       date_started: formatDateForDB(dateStarted.value),
       status: selectedStatus.value ? selectedStatus.value.value : 'to-read',
+      date_finished: finishedDate.value ? formatDateForDB(finishedDate.value) : null,
     }
 
     await readingSessionsStore.addSession(sessionData)

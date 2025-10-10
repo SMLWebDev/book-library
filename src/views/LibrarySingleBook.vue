@@ -97,11 +97,11 @@
             <div v-if="userBook.dateAdded" class="text-sm text-gray-600">
               Added to library: {{ formatDate(userBook.dateAdded) }}
             </div>
-            <div v-if="userBook.dateStarted" class="text-sm text-gray-600">
-              Started reading: {{ formatDate(userBook.dateStarted) }}
+            <div v-if="userBook.date_started" class="text-sm text-gray-600">
+              Started reading: {{ formatDate(userBook.date_started) }}
             </div>
-            <div v-if="userBook.dateFinished" class="text-sm text-gray-600">
-              Finished reading: {{ formatDate(userBook.dateFinished) }}
+            <div v-if="userBook.date_finished" class="text-sm text-gray-600">
+              Finished reading: {{ formatDate(userBook.date_finished) }}
             </div>
             <div v-if="userBook.userRating" class="flex items-center">
               <span class="text-yellow-500 mr-1">⭐</span>
@@ -115,7 +115,12 @@
 
     <!-- User progress -->
     <div class="mt-6">
-      <ReadingSessionForm :bookId="userBook.bookId" :bookTitle="userBook.title" />
+      <ReadingSessionForm
+        :bookId="userBook.bookId"
+        :bookTitle="userBook.title"
+        :bookStatus="userBook.status"
+        :bookPages="userBook.pageCount"
+      />
     </div>
 
     <!-- Description Section -->
