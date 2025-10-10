@@ -17,3 +17,7 @@
 
 - [ ] TODO-FEAT: Allow users to upload a profile photo
 - [ ] TODO-FEAT: Add a 'My Profile' page to allow users to edit their details
+
+## Nice to haves
+
+- [ ] TODO-FEAT: Add a database of book quotes to show randomly on pages
