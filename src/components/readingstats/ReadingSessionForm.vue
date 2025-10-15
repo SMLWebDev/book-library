@@ -19,7 +19,15 @@
         </div>
         <div>
           <label for="finishedDate" class="mr-2">Finished Date</label>
-          <DatePicker v-model="finishedDate" showIcon size="small" dateFormat="dd/mm/yy" />
+          <DatePicker
+            v-model="finishedDate"
+            showIcon
+            size="small"
+            class="flex-1"
+            dateFormat="dd/mm/yy"
+            :disabled="autoDetectedFinish"
+          />
+          <span v-if="autoDetectedFinish" class="ml-2 text-sm text-green-600">(Auto-detected)</span>
         </div>
         <div>
           <label for="selectedStatus" class="mr-2">Reading Status</label>
@@ -27,7 +35,7 @@
             v-model="selectedStatus"
             :options="readingStatus"
             optionLabel="name"
-            :placeholder="bookStatus"
+            :placeholder="currentBookStatus"
             checkmark
             :highlightOnSelect="true"
           />
@@ -78,6 +86,24 @@
   </div>
 
   <ReadingSessionList />
+
+  <Dialog
+    v-model:visible="showCongratulations"
+    modal
+    header="Congratulations!"
+    :style="{ width: '50rem' }"
+    :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
+  >
+    <div class="flex flex-col items-center text-center">
+      <i class="pi pi-trophy text-6xl text-yellow-500 mb-4"></i>
+      <h3 class="text-2xl font-bold mb-2">You've finished reading!</h3>
+      <p class="text-lg mb-4">
+        Congratulations on completeting <strong>"{{ bookTitle }}"</strong>!
+      </p>
+      <p class="text-gray-600 mb-6">You read {{ props.bookPages }} pages. Great job!</p>
+      <Button label="Awesome!" icon="pi pi-check" @click="showCongratulations = false" />
+    </div>
+  </Dialog>
 </template>
 
 <script setup lang="ts">
@@ -87,8 +113,9 @@ import { useAuthStore } from '@/stores/auth'
 
 import type { UserBook } from '@/types'
 import { formatDateForDB } from '@/utils/dateFormatter'
+import { userBookToDatabase } from '@/utils/bookTransformer'
 
-import { Button, InputNumber, DatePicker, Select } from 'primevue'
+import { Button, InputNumber, DatePicker, Select, Dialog } from 'primevue'
 
 import ReadingSessionList from '@/components/readingstats/ReadingSessionList.vue'
 
@@ -99,9 +126,10 @@ const startPage = ref(1)
 const endPage = ref(10)
 const dateRead = ref(new Date())
 const message = ref<string | null>(null)
+const showCongratulations = ref(false)
 
 const dateStarted = ref(new Date())
-const finishedDate = ref(new Date())
+const finishedDate = ref<Date | null>(null)
 const selectedStatus = ref()
 
 const props = defineProps<{
@@ -109,11 +137,26 @@ const props = defineProps<{
   bookTitle: string
   bookStatus: UserBook['status']
   bookPages: number | null | undefined
+  bookData: UserBook
 }>()
 
 const pagesRead = computed(() => {
   return endPage.value - startPage.value + 1
 })
+
+const isBookFinished = computed(() => {
+  return props.bookPages ? endPage.value >= props.bookPages : false
+})
+
+const autoDetectedFinish = computed(() => {
+  return isBookFinished.value && !finishedDate.value
+})
+
+const currentBookStatus = computed(() => props.bookData.status)
+
+const emit = defineEmits<{
+  (e: 'book-updated', bookData: UserBook): void
+}>()
 
 const messageClass = computed(() => {
   return message.value?.includes('Error')
@@ -135,31 +178,67 @@ const addSession = async () => {
 
   try {
     const sessionData = {
-      user_id: authStore.user.id,
-      book_id: props.bookId,
-      pages_read: pagesRead.value,
-      start_page: startPage.value,
-      end_page: endPage.value,
-      date_read: formatDateForDB(dateRead.value),
+      userId: authStore.user.id,
+      bookId: props.bookId,
+      pagesRead: pagesRead.value,
+      startPage: startPage.value,
+      endPage: endPage.value,
+      dateRead: formatDateForDB(dateRead.value),
     }
 
     const bookProgress: Partial<UserBook> = {
-      date_started: formatDateForDB(dateStarted.value),
+      dateStarted: formatDateForDB(dateStarted.value),
       status: selectedStatus.value ? selectedStatus.value.value : 'to-read',
-      date_finished: finishedDate.value ? formatDateForDB(finishedDate.value) : null,
+      dateFinished: finishedDate.value ? formatDateForDB(finishedDate.value) : null,
     }
 
-    await readingSessionsStore.addSession(sessionData)
-    await readingSessionsStore.updateBookProgress(props.bookId, bookProgress)
-    message.value = `Added reading session for ${pagesRead.value} pages read on ${dateRead.value.toDateString()}`
+    if (isBookFinished.value || finishedDate.value) {
+      bookProgress.status = 'read'
+      bookProgress.dateFinished = finishedDate.value
+        ? formatDateForDB(finishedDate.value)
+        : formatDateForDB(new Date())
 
-    startPage.value = endPage.value + 1
-    endPage.value = startPage.value + 9
+      if (isBookFinished.value && props.bookStatus !== 'read') {
+        showCongratulations.value = true
+      }
+    }
+
+    const dbBookProgress = userBookToDatabase(bookProgress)
+
+    await readingSessionsStore.addSession(sessionData)
+    await readingSessionsStore.updateBookProgress(props.bookId, dbBookProgress)
+
+    if (isBookFinished.value || finishedDate.value) {
+      emit('book-updated', {
+        ...props.bookData,
+        status: 'read',
+        dateFinished: bookProgress.dateFinished,
+      })
+    }
+
+    if (isBookFinished.value) {
+      message.value = `Congratulations! You finished "${props.bookTitle}"!`
+    } else {
+      message.value = `Added reading session for ${pagesRead.value} pages read on ${dateRead.value.toDateString()}`
+    }
+
+    if (!isBookFinished.value) {
+      startPage.value = endPage.value + 1
+      endPage.value = Math.min(startPage.value + 9, props.bookPages || 10000)
+    }
   } catch (error) {
     message.value = 'Error adding session'
     console.error('Error adding sessions: ', error)
   }
 }
+
+watch(isBookFinished, (finished) => {
+  if (finished && !finishedDate.value) {
+    finishedDate.value = new Date()
+    selectedStatus.value = 'read'
+    message.value = 'Book Completed! Finished date auto-set to today.'
+  }
+})
 
 watch(message, (newMessage) => {
   if (newMessage) {

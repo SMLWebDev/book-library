@@ -97,11 +97,11 @@
             <div v-if="userBook.dateAdded" class="text-sm text-gray-600">
               Added to library: {{ formatDate(userBook.dateAdded) }}
             </div>
-            <div v-if="userBook.date_started" class="text-sm text-gray-600">
-              Started reading: {{ formatDate(userBook.date_started) }}
+            <div v-if="userBook.dateStarted" class="text-sm text-gray-600">
+              Started reading: {{ formatDate(userBook.dateStarted) }}
             </div>
-            <div v-if="userBook.date_finished" class="text-sm text-gray-600">
-              Finished reading: {{ formatDate(userBook.date_finished) }}
+            <div v-if="userBook.dateFinished" class="text-sm text-gray-600">
+              Finished reading: {{ formatDate(userBook.dateFinished) }}
             </div>
             <div v-if="userBook.userRating" class="flex items-center">
               <span class="text-yellow-500 mr-1">⭐</span>
@@ -120,6 +120,8 @@
         :bookTitle="userBook.title"
         :bookStatus="userBook.status"
         :bookPages="userBook.pageCount"
+        :bookData="userBook"
+        @book-updated="handleBookUpdated"
       />
     </div>
 
@@ -239,5 +241,13 @@ const getStatusSeverity = (status: string): string => {
 const handleImageError = (event: Event) => {
   const img = event.target as HTMLImageElement
   img.src = '/placeholder-book.png'
+}
+
+const handleBookUpdated = (updatedBook: UserBook) => {
+  userBook.value = updatedBook
+  const index = bookStore.userBooks.findIndex((b) => b.id === updatedBook.id)
+  if (index !== -1) {
+    bookStore.userBooks[index] = updatedBook
+  }
 }
 </script>
