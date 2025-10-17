@@ -49,13 +49,13 @@
                 >
                   <!-- TODO-FEAT: Add option to remove session from list -->
                   <div class="flex justify-between items-center">
-                    <span class="font-semibold">{{ session.pages_read }} pages</span>
+                    <span class="font-semibold">{{ session.pagesRead }} pages</span>
                     <span class="text-sm text-gray-500">{{
-                      formatDateForDisplay(session.date_read)
+                      formatDateForDisplay(session.dateRead)
                     }}</span>
                   </div>
-                  <div v-if="session.start_page && session.end_page" class="text-sm text-gray-600">
-                    Pages {{ session.start_page }} - {{ session.end_page }}
+                  <div v-if="session.startPage && session.endPage" class="text-sm text-gray-600">
+                    Pages {{ session.startPage }} - {{ session.endPage }}
                   </div>
                 </div>
               </AccordionContent>

@@ -115,7 +115,14 @@
 
     <!-- User progress -->
     <div class="mt-6">
-      <ReadingSessionForm :bookId="userBook.bookId" :bookTitle="userBook.title" />
+      <ReadingSessionForm
+        :bookId="userBook.bookId"
+        :bookTitle="userBook.title"
+        :bookStatus="userBook.status"
+        :bookPages="userBook.pageCount"
+        :bookData="userBook"
+        @book-updated="handleBookUpdated"
+      />
     </div>
 
     <!-- Description Section -->
@@ -234,5 +241,13 @@ const getStatusSeverity = (status: string): string => {
 const handleImageError = (event: Event) => {
   const img = event.target as HTMLImageElement
   img.src = '/placeholder-book.png'
+}
+
+const handleBookUpdated = (updatedBook: UserBook) => {
+  userBook.value = updatedBook
+  const index = bookStore.userBooks.findIndex((b) => b.id === updatedBook.id)
+  if (index !== -1) {
+    bookStore.userBooks[index] = updatedBook
+  }
 }
 </script>

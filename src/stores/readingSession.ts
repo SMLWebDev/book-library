@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { supabase } from '@/api/supabase'
 import { useAuthStore } from '@/stores/auth'
 import type { ReadingSessions, NewReadingSession, UserBook } from '@/types'
+import { transformReadingSessions, transformReadingSession, newReadingSessionToDatabase } from '@/utils/readingSessionTransformer'
 
 export const useReadingSessionsStore = defineStore('readingSessions', () => {
     const sessions = ref<ReadingSessions[]>([])
@@ -11,9 +12,9 @@ export const useReadingSessionsStore = defineStore('readingSessions', () => {
 
     const authStore = useAuthStore()
 
-    const totalPagesRead = computed(() => sessions.value.reduce((sum, session) => sum + (session.pages_read ?? 0), 0))
+    const totalPagesRead = computed(() => sessions.value.reduce((sum, session) => sum + (session.pagesRead ?? 0), 0))
 
-    const readingDaysCount = computed(() => new Set(sessions.value.map(s => s.date_read)).size)
+    const readingDaysCount = computed(() => new Set(sessions.value.map(s => s.dateRead)).size)
 
     const averagePagesPerSession = computed(() => sessions.value.length > 0 ? totalPagesRead.value / sessions.value.length : 0)
 
@@ -29,7 +30,7 @@ export const useReadingSessionsStore = defineStore('readingSessions', () => {
                 .order('date_read', { ascending: true })
                 
             if (supabaseError) throw supabaseError
-            sessions.value = data || []
+            sessions.value = transformReadingSessions(data || [])
         } catch (err) {
             error.value = err instanceof Error ? err.message : 'Failed to load sessions'
             console.error('Error fetching sessions: ', err)
@@ -43,15 +44,18 @@ export const useReadingSessionsStore = defineStore('readingSessions', () => {
             loading.value = true
             error.value = null
 
+            const dbData = newReadingSessionToDatabase(sessionData)
+
             const { data, error: supabaseError } = await supabase
                 .from('reading_sessions')
-                .insert([sessionData])
+                .insert([dbData])
                 .select()
 
             if (supabaseError) throw supabaseError
 
             if (data && data.length > 0) {
-                sessions.value.unshift(data[0])
+                const transformedSession = transformReadingSession(data[0])
+                sessions.value.unshift(transformedSession)
             }
 
             return data?.[0]
