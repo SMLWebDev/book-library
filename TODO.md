@@ -21,3 +21,7 @@
 ## Nice to haves
 
 - [ ] TODO-FEAT: Add a database of book quotes to show randomly on pages
+
+## Bugs
+
+- [ ] TODO-BUG: Fix issue with page numbers in Reading Session, not showing the correct numbers on page refresh.
