@@ -122,6 +122,7 @@
         :bookPages="userBook.pageCount"
         :bookData="userBook"
         @book-updated="handleBookUpdated"
+        @book-completed="handleBookCompleted"
       />
     </div>
 
@@ -241,6 +242,17 @@ const getStatusSeverity = (status: string): string => {
 const handleImageError = (event: Event) => {
   const img = event.target as HTMLImageElement
   img.src = '/placeholder-book.png'
+}
+
+const handleBookCompleted = (completedBook: UserBook) => {
+  console.log('Book completed: ', {
+    bookId: completedBook.id,
+    title: completedBook.title,
+    pages: completedBook.pageCount,
+    completedAt: completedBook.dateFinished,
+  })
+
+  // TODO: Add any additional handling logic here - e.g., statistics update, notifications, achievements, social features, etc.
 }
 
 const handleBookUpdated = (updatedBook: UserBook) => {
