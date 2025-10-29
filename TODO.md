@@ -25,3 +25,4 @@
 ## Bugs
 
 - [ ] TODO-BUG: Fix issue with page numbers in Reading Session, not showing the correct numbers on page refresh.
+- [ ] TODO-BUG: Fix issue where all books are showing reading sessions from every book session.
