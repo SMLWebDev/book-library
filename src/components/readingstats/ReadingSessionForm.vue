@@ -89,9 +89,10 @@
 
   <CompletionDialog
     v-model:show="showCongratulations"
+    :bookId="props.bookId"
     :bookTitle="bookTitle"
     :bookPages="props.bookPages || 0"
-    @close="$emit('book-completed', completedBookData)"
+    @close="handleDialogClose"
   />
 </template>
 
@@ -232,6 +233,10 @@ const addSession = async () => {
     message.value = 'Error adding session'
     console.error('Error adding sessions: ', error)
   }
+}
+
+const handleDialogClose = () => {
+  console.log('Completion dialog closed')
 }
 
 watch(isBookFinished, (finished) => {
