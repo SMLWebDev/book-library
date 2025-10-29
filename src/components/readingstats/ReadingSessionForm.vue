@@ -87,23 +87,13 @@
 
   <ReadingSessionList />
 
-  <Dialog
-    v-model:visible="showCongratulations"
-    modal
-    header="Congratulations!"
-    :style="{ width: '50rem' }"
-    :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
-  >
-    <div class="flex flex-col items-center text-center">
-      <i class="pi pi-trophy text-6xl text-yellow-500 mb-4"></i>
-      <h3 class="text-2xl font-bold mb-2">You've finished reading!</h3>
-      <p class="text-lg mb-4">
-        Congratulations on completeting <strong>"{{ bookTitle }}"</strong>!
-      </p>
-      <p class="text-gray-600 mb-6">You read {{ props.bookPages }} pages. Great job!</p>
-      <Button label="Awesome!" icon="pi pi-check" @click="showCongratulations = false" />
-    </div>
-  </Dialog>
+  <CompletionDialog
+    v-model:show="showCongratulations"
+    :bookId="props.bookId"
+    :bookTitle="bookTitle"
+    :bookPages="props.bookPages || 0"
+    @close="handleDialogClose"
+  />
 </template>
 
 <script setup lang="ts">
@@ -115,9 +105,10 @@ import type { UserBook } from '@/types'
 import { formatDateForDB } from '@/utils/dateFormatter'
 import { userBookToDatabase } from '@/utils/bookTransformer'
 
-import { Button, InputNumber, DatePicker, Select, Dialog } from 'primevue'
+import { Button, InputNumber, DatePicker, Select } from 'primevue'
 
 import ReadingSessionList from '@/components/readingstats/ReadingSessionList.vue'
+import CompletionDialog from '../CompletionDialog.vue'
 
 const authStore = useAuthStore()
 const readingSessionsStore = useReadingSessionsStore()
@@ -127,6 +118,7 @@ const endPage = ref(10)
 const dateRead = ref(new Date())
 const message = ref<string | null>(null)
 const showCongratulations = ref(false)
+const completedBookData = ref<UserBook | null>(null)
 
 const dateStarted = ref(new Date())
 const finishedDate = ref<Date | null>(null)
@@ -154,9 +146,12 @@ const autoDetectedFinish = computed(() => {
 
 const currentBookStatus = computed(() => props.bookData.status)
 
-const emit = defineEmits<{
+interface Emits {
   (e: 'book-updated', bookData: UserBook): void
-}>()
+  (e: 'book-completed', bookData: UserBook): void
+}
+
+const emit = defineEmits<Emits>()
 
 const messageClass = computed(() => {
   return message.value?.includes('Error')
@@ -192,13 +187,21 @@ const addSession = async () => {
       dateFinished: finishedDate.value ? formatDateForDB(finishedDate.value) : null,
     }
 
+    const isNewCompletion = isBookFinished.value && props.bookStatus !== 'read'
+
     if (isBookFinished.value || finishedDate.value) {
       bookProgress.status = 'read'
       bookProgress.dateFinished = finishedDate.value
         ? formatDateForDB(finishedDate.value)
         : formatDateForDB(new Date())
 
-      if (isBookFinished.value && props.bookStatus !== 'read') {
+      completedBookData.value = {
+        ...props.bookData,
+        status: 'read',
+        dateFinished: bookProgress.dateFinished,
+      }
+
+      if (isNewCompletion) {
         showCongratulations.value = true
       }
     }
@@ -230,6 +233,10 @@ const addSession = async () => {
     message.value = 'Error adding session'
     console.error('Error adding sessions: ', error)
   }
+}
+
+const handleDialogClose = () => {
+  console.log('Completion dialog closed')
 }
 
 watch(isBookFinished, (finished) => {
