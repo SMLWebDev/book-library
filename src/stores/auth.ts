@@ -6,6 +6,7 @@ import type { User } from '../types'
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null)
   const isLoading = ref(true)
+  const error = ref('')
 
   const initializeAuth = async () => {
     try {
@@ -64,6 +65,42 @@ export const useAuthStore = defineStore('auth', () => {
     if (error) throw error
   }
 
+  const resetPassword = async (email: string) => {
+    isLoading.value = true
+    error.value = ''
+
+    try {
+      const { error: supabaseError } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      })
+
+      if (supabaseError) throw supabaseError
+    } catch (err) {
+      error.value = err instanceof Error ? err.message : 'Failed to send reset email'
+      throw err
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  const updatePassword = async (newPassword: string) => {
+    isLoading.value = true
+    error.value = ''
+
+    try {
+      const { error: supabaseError } = await supabase.auth.updateUser({
+        password: newPassword
+      })
+
+      if (supabaseError) throw supabaseError
+    } catch (err) {
+      error.value = err instanceof Error ? err.message : 'Failed to update password'
+      throw err
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   return {
     user,
     isLoading,
@@ -71,5 +108,7 @@ export const useAuthStore = defineStore('auth', () => {
     signUp,
     signIn,
     signOut,
+    resetPassword,
+    updatePassword
   }
 })

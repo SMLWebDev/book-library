@@ -47,14 +47,14 @@ const router = createRouter({
     },
     {
       path: '/forgot-password',
-      name: 'password-reset',
-      component: () => import('@/views/PasswordReset.vue'),
+      name: 'forgotPassword',
+      component: () => import('@/views/ForgotPasswordView.vue'),
       meta: { requiresGuest: true }
     },
     {
-      path: '/update-password',
-      name: 'update-password',
-      component: () => import('@/views/UpdatePassword.vue'),
+      path: '/reset-password',
+      name: 'resetPassword',
+      component: () => import('@/views/ResetPasswordView.vue'),
       meta: { requiresGuest: true }
     }
   ],

@@ -14,7 +14,7 @@ export default defineConfigWithVueTs(
     files: ['**/*.{ts,mts,tsx,vue}'],
   },
 
-  globalIgnores(['**/dist/**', '**/dist-ssr/**', '**/coverage/**', 'src/utils/readingSessionTransformer.ts', 'src/utils/bookTransformer.ts']),
+  globalIgnores(['**/dist/**', '**/dist-ssr/**', '**/coverage/**', 'src/utils/readingSessionTransformer.ts', 'src/utils/bookTransformer.ts', 'src/composables/useNavigation.ts']),
 
   pluginVue.configs['flat/essential'],
   vueTsConfigs.recommended,

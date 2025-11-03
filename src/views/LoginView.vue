@@ -12,6 +12,9 @@
           placeholder="Enter your email"
           class="w-full"
           :class="{ 'p-invalid': errors.email }"
+          autocomplete="your-email"
+          autocapitalize="off"
+          spellcheck="false"
         />
         <small v-if="errors.email" class="text-red-500">{{ errors.email }}</small>
       </div>
@@ -25,6 +28,11 @@
         toggleMask
         class="w-full"
         :class="{ 'p-invalid': errors.password }"
+        :inputProps="{
+          autocomplete: 'current-password',
+          autocapitalize: 'off',
+          spellcheck: 'false',
+        }"
       />
       <small v-if="errors.password" class="text-red-500">{{ errors.password }}</small>
 
@@ -53,7 +61,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { InputText, Button, Password } from 'primevue'
@@ -67,6 +75,13 @@ const errorMessage = ref('')
 const form = reactive({
   email: '',
   password: '',
+})
+
+onMounted(() => {
+  setTimeout(() => {
+    form.email = ''
+    form.password = ''
+  }, 100)
 })
 
 const errors = reactive({
