@@ -22,6 +22,7 @@
 
 - [ ] TODO-FEAT: Add personal review to the single book view
 - [ ] TODO-FEAT: Create personal statistics page
+- [ ] TODO-FEAT: Update Navbar with PrimeVue component
 
 ## Nice to haves
 
