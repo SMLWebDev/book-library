@@ -12,3 +12,7 @@ body {
 .card-design {
   @apply bg-white rounded-lg shadow-md p-6;
 }
+
+.menubar-hover:hover {
+  @apply !text-indigo-600 !bg-gray-200;
+}

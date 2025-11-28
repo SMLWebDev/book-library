@@ -19,13 +19,6 @@ app.use(PrimeVue, {
   theme: {
     preset: Aura,
   },
-  pt: {
-    accordion: {
-      root: {
-        class: 'border border-gray-300 dark:border-gray-600 rounded-md',
-      },
-    }
-  }
 })
 app.use(ToastService)
 
